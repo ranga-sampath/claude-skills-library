@@ -21,9 +21,9 @@ All skills in this repository follow a standardized structure to ensure interope
 ## 📂 Repository Structure
 ```text
 .
-├── /image-audio-extraction   # Multimodal extraction logic
-│   ├── /src                  # Core skill code
-│   ├── /tests                # Unit & Integration tests
-│   └── /docs                 # Skill-specific documentation
-├── /templates                # Standardized templates for new skills
-└── README.md                 # Project Index (You are here)
+├── /extract-data-from-image-or-audio   # Multimodal extraction logic
+│   ├── /src                            # Core skill code
+│   ├── /tests                          # Unit & Integration tests
+│   └── /docs                           # Skill-specific documentation
+|
+└── README.md                           # Project Index (You are here)
