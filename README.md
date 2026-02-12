@@ -13,7 +13,7 @@ All skills in this repository follow a standardized structure to ensure interope
 
 | Skill Name | Description | Status | Latest Report |
 | :--- | :--- | :--- | :--- |
-| **Image & Audio Extraction** | Multimodal extraction suite for processing media assets within Claude. | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) | [View Report](./image-audio-extraction/docs/test-report.md) |
+| **Image & Audio Extraction** | Multimodal extraction suite for processing media assets within Claude. | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) | [View Report](./extract-data-from-image-or-audio/tests/TEST_REPORT.md) |
 | **More Coming Soon...** | Next skill in development. | `Planning` | N/A |
 
 ---
