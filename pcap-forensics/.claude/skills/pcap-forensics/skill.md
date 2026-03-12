@@ -80,7 +80,7 @@ If NOT_FOUND:
 Error: pcap_extractor.py not found at ~/.claude/skills/pcap-forensics/
 
 Re-install the skill:
-  cp <repo>/pcap-forensics/.claude/skills/pcap-forensics/pcap_extractor.py ~/.claude/skills/pcap-forensics/
+  cp <repo>/pcap-analysis/.claude/skills/pcap-forensics/pcap_extractor.py ~/.claude/skills/pcap-forensics/
 ```
 
 ---
@@ -224,8 +224,22 @@ For each HIGH or CRITICAL finding: 2-3 sentence technical explanation covering w
 ### Remediation
 Specific remediation for each finding with exact CLI commands. Specify which host/device each command runs on.
 
+**Sequencing rule:** When remediation steps have dependencies or must be applied in a specific order to avoid an outage or to be effective, present them as a numbered sequence with each step labelled. Do not list related steps as independent bullets — a reader must be able to apply them top-to-bottom without needing to infer the order. If a step must complete before the next begins (e.g. enable DHCP snooping before DAI, flush a stale entry before adding a static one), make that dependency explicit in the step label or a one-line note.
+
+Example structure for sequenced remediation:
+```
+**Step 1 — <action> (on <device>):** <why first>
+<commands>
+
+**Step 2 — <action> (on <device>):** <depends on step 1 / run after>
+<commands>
+
+**Step 3 — Verify:**
+<commands>
+```
+
 Expected specificity:
-- ARP spoofing: `ip arp inspection vlan <id>` on switch; `arp -d <ip> && ip neigh flush dev eth0` on host
+- ARP spoofing: flush poisoned entry before pinning static binding; trust uplink ports before enabling DAI; add ARP ACLs for static-IP hosts before enabling DAI; verify with `show ip arp inspection statistics vlan <id>`
 - PMTUD black hole: `ping -M do -s 1400 <dst>` to find MTU; `ip link set dev eth0 mtu <value>` or `iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu`
 - TCP retransmissions: `ethtool eth0 | grep -i duplex`; `netstat -s | grep retrans`; `tc -s qdisc show dev eth0`
 - Zero-window: `ss -tnp dst <ip>` to identify process; check application logs for slow queries or GC pauses
@@ -297,4 +311,19 @@ CLI commands to investigate further. If path is CLEAN: "No action required."
 - Every claim must be supported by data in the JSON. Do not fabricate frame numbers, IPs, or statistics.
 - Do not speculate beyond what the data supports. When data is insufficient, state what additional capture would be needed.
 - Correlate across protocols — the most valuable insights come from connecting symptoms across layers.
-- After the report, tell the user where the semantic JSON was saved (useful for further analysis or scripting).
+
+## Step 6 — Save Report to Disk
+
+After generating the forensic report, write it to a `.md` file alongside the input pcap.
+
+**Naming convention:**
+- Single capture: `<pcap_directory>/<capture_stem>_forensic_report.md`
+- Compare (temporal or endpoint correlation): `<pcap_a_directory>/<capture_a_stem>_vs_<capture_b_stem>_report.md`
+
+Where `<capture_stem>` is the filename without extension (e.g. `arp_spoofing.pcap` → `arp_spoofing_forensic_report.md`).
+
+Use the Write tool to save the full report markdown to that path.
+
+After saving, tell the user:
+- The report path
+- The semantic JSON path(s) (from the extractor stdout)
