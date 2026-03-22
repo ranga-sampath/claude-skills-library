@@ -1,11 +1,11 @@
 # Claude Skills & Agent Toolkit 🤖
 
-A curated collection of production-grade skills, MCP servers, and agentic workflows designed for the Anthropic Claude ecosystem. Each skill in this library is built with a "Test-First" philosophy, ensuring reliability in real-world deployments.
+A curated collection of production-grade skills, MCP servers, and agentic workflows designed for the Anthropic Claude ecosystem.
 
-## 🏗️ Architecture Philosophy
-All skills in this repository follow a standardized structure to ensure interoperability and ease of integration:
+## 🏗️ Structure Philosophy
+All skills in this repository follow a standardized structure:
 * **Standardized Documentation:** Every skill includes an Overview, How-To, and Technical Specification.
-* **Rigorous Testing:** Full test suites and verifiable Test Reports are included for every module.
+* **Examples:** Sample inputs and reference output reports are included so you can verify behaviour before deploying.
 
 ---
 
