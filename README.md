@@ -19,6 +19,7 @@ All skills in this repository follow a standardized structure:
 | **iptables-diff-explain** | Compares two `iptables-save` snapshots and explains what changed, whether it tightens or loosens posture, and what to verify. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
 | **nftables-explain** | Plain-English security analysis of an `nft --json list ruleset` snapshot — address families, policies, rules, named sets, and overall posture. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
 | **nftables-diff-explain** | Compares two nftables JSON snapshots and explains what changed, whether it tightens or loosens posture, and what to verify. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
+| **azure-security-rule-resolver** | Resolves the Azure dual-gate NSG evaluation model against a traffic tuple and returns a deterministic Allow/Deny verdict — or audits all rules for shadowed entries and posture findings. Input is `az network nic list-effective-nsg` JSON. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
 
 ---
 
@@ -55,6 +56,12 @@ All skills in this repository follow a standardized structure:
 ├── /nftables-diff-explain               # Operational skill: nftables change analysis
 │   ├── .claude/skills/nftables-diff-explain/ # skill.md + parser + differ
 │   ├── /examples                       # Sample fixtures and diff report
+│   └── /docs                           # Overview, how-to, test plan
+|
+├── /azure-security-rule-resolver        # Operational skill: Azure NSG dual-gate resolution
+│   ├── .claude/skills/azure-security-rule-resolver/ # skill.md + nsg_preprocessor.py
+│   ├── /fixtures                       # 10 synthetic test fixtures
+│   ├── /examples                       # Reference resolver report
 │   └── /docs                           # Overview, how-to, test plan
 |
 └── README.md                           # Project Index (You are here)
