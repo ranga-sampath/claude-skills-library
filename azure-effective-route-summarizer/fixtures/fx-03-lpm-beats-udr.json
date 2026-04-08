@@ -1,7 +1,7 @@
 {
   "value": [
     {
-      "addressPrefix": ["10.20.30.40/32"],
+      "addressPrefix": ["10.1.0.0/16"],
       "disableBgpRoutePropagation": false,
       "name": null,
       "nextHopIpAddress": [],
@@ -10,39 +10,30 @@
       "state": "Active"
     },
     {
-      "addressPrefix": ["10.20.30.0/24"],
-      "disableBgpRoutePropagation": false,
-      "name": "route-subnet-to-firewall",
-      "nextHopIpAddress": ["10.0.0.4"],
-      "nextHopType": "VirtualAppliance",
-      "source": "User",
-      "state": "Active"
-    },
-    {
-      "addressPrefix": ["10.20.0.0/16"],
-      "disableBgpRoutePropagation": false,
-      "name": "route-spoke-to-firewall",
-      "nextHopIpAddress": ["10.0.0.4"],
-      "nextHopType": "VirtualAppliance",
-      "source": "User",
-      "state": "Active"
-    },
-    {
-      "addressPrefix": ["10.0.0.0/8"],
+      "addressPrefix": ["10.2.0.0/16"],
       "disableBgpRoutePropagation": false,
       "name": null,
       "nextHopIpAddress": [],
-      "nextHopType": "VnetLocal",
+      "nextHopType": "VnetPeering",
+      "source": "Default",
+      "state": "Active"
+    },
+    {
+      "addressPrefix": ["10.3.0.0/16"],
+      "disableBgpRoutePropagation": false,
+      "name": null,
+      "nextHopIpAddress": [],
+      "nextHopType": "VnetPeering",
       "source": "Default",
       "state": "Active"
     },
     {
       "addressPrefix": ["0.0.0.0/0"],
       "disableBgpRoutePropagation": false,
-      "name": null,
-      "nextHopIpAddress": [],
-      "nextHopType": "Internet",
-      "source": "Default",
+      "name": "route-all-to-hub-nva",
+      "nextHopIpAddress": ["10.1.0.4"],
+      "nextHopType": "VirtualAppliance",
+      "source": "User",
       "state": "Active"
     }
   ]

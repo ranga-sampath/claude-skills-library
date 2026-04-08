@@ -65,21 +65,28 @@ Audit mode cross-check:
 
 ---
 
-### T3 — LPM beats UDR: /32 system route over /24 UDR (fx-03)
+### T3 — LPM beats UDR: VNet peering /16 over force-tunnel UDR /0 (fx-03)
+
+Scenario: engineer adds a `0.0.0.0/0` UDR to send all traffic through a hub NVA (forced tunnelling). VNet peering to two spoke VNets automatically adds `10.2.0.0/16` and `10.3.0.0/16` system routes. Traffic to the spokes bypasses the NVA — the peering routes are more specific than the /0 UDR.
 
 ```
-/azure-effective-route-summarizer fixtures/fx-03-lpm-beats-udr.json --dst 10.20.30.40
+/azure-effective-route-summarizer fixtures/fx-03-lpm-beats-udr.json --dst 10.2.5.10
 ```
 
 **Expected:**
-- Three candidates for 10.20.30.40:
-  - `10.20.30.40/32` source=Default, nextHopType=VnetLocal (system adds /32 host routes for special addresses)
-  - `10.20.30.0/24` source=User, nextHopType=VirtualAppliance (UDR)
-  - `10.20.0.0/16` source=User, nextHopType=VirtualAppliance (UDR)
-- LPM winner: `/32` (prefix_length=32) — wins unconditionally
+- Two candidates for 10.2.5.10:
+  - `10.2.0.0/16` source=Default, nextHopType=VnetPeering, state=Active
+  - `0.0.0.0/0` source=User, nextHopType=VirtualAppliance (UDR `route-all-to-hub-nva`), state=Active
+- LPM winner: `10.2.0.0/16` (prefix_length=16 > 0) — wins unconditionally
 - Output must NOT select the UDR despite it being a User source
-- Explicit note: "LPM is absolute — a /32 system route overrides any broader UDR"
-- NVA warning NOT emitted (winner is VnetLocal, not VirtualAppliance)
+- Explicit note: "LPM is absolute — the VNetPeering /16 overrides the /0 UDR; spoke-to-spoke traffic bypasses the NVA"
+- NVA warning NOT emitted (winner is VnetPeering, not VirtualAppliance)
+
+Audit mode cross-check:
+```
+/azure-effective-route-summarizer fixtures/fx-03-lpm-beats-udr.json
+```
+**Expected:** Notable finding under "Shadowed by specificity" — the /0 UDR is present but the two peering /16 routes are more specific. Traffic to the spoke VNets bypasses the NVA. Engineer must add explicit UDRs for each spoke prefix pointing to the NVA if inspection of spoke traffic is required.
 
 ---
 
@@ -317,7 +324,7 @@ Before considering the skill validated, verify each of the following:
 
 - [ ] T1: VNetLocal /24 beats Internet /0 via LPM; audit shows all 5 routes cleanly
 - [ ] T2: UDR wins at equal /24 via source precedence; system route reason stated explicitly
-- [ ] T3: /32 system route wins over /24 UDR; output explicitly warns LPM beats precedence
+- [ ] T3: VNetPeering /16 wins over UDR /0 via LPM; output explicitly states peering routes bypass the NVA
 - [ ] T4: NVA warning emitted with NVA IP and IP Forwarding reminder
 - [ ] T5: catch-all /0 wins for public IP (8.8.8.8) with is_zero_route flagged; VNetLocal /24 wins for VNet-local IP (10.0.1.50) via LPM over /0
 - [ ] T6: BGP (VirtualNetworkGateway) beats Default at equal /16; reason stated
