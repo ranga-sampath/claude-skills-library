@@ -20,6 +20,7 @@ All skills in this repository follow a standardized structure:
 | **nftables-explain** | Plain-English security analysis of an `nft --json list ruleset` snapshot — address families, policies, rules, named sets, and overall posture. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
 | **nftables-diff-explain** | Compares two nftables JSON snapshots and explains what changed, whether it tightens or loosens posture, and what to verify. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
 | **azure-security-rule-resolver** | Resolves the Azure dual-gate NSG evaluation model against a traffic tuple and returns a deterministic Allow/Deny verdict — or audits all rules for shadowed entries and posture findings. Input is `az network nic list-effective-nsg` JSON. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
+| **azure-effective-route-summarizer** | Applies the Azure route selection algorithm (LPM → source precedence → BGP tie-break) to `az network nic show-effective-route-table` JSON and returns the single winning route for a destination IP — with a named elimination reason for every competing route. Surfaces invalid routes, NVA asymmetry risks, and blackholes. | Operational | ![Verified](https://img.shields.io/badge/Status-Verified-success?style=flat-square) |
 
 ---
 
@@ -62,6 +63,11 @@ All skills in this repository follow a standardized structure:
 │   ├── .claude/skills/azure-security-rule-resolver/ # skill.md + nsg_preprocessor.py
 │   ├── /fixtures                       # 10 synthetic test fixtures
 │   ├── /examples                       # Reference resolver report
+│   └── /docs                           # Overview, how-to, test plan
+│
+├── /azure-effective-route-summarizer    # Operational skill: Azure effective route selection
+│   ├── .claude/skills/azure-effective-route-summarizer/ # skill.md + route_preprocessor.py
+│   ├── /fixtures                       # 15 synthetic test fixtures
 │   └── /docs                           # Overview, how-to, test plan
 |
 └── README.md                           # Project Index (You are here)
