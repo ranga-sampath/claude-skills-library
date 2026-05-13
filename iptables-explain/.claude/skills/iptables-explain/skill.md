@@ -1,3 +1,8 @@
+---
+name: iptables-explain
+description: Use when the user provides a single iptables-save snapshot file and wants to understand what the rules are doing, the firewall posture of a Linux host, or what specific iptables rules mean. Trigger phrases include "what does this iptables config do", "explain my iptables rules", "is this firewall secure", "analyze my iptables ruleset", "what is my iptables doing". Do NOT use when the user has two snapshots to compare (use iptables-diff-explain), for nftables rules (use nftables-explain), or for questions about iptables without providing a snapshot file.
+---
+
 # iptables-explain — Claude Code Skill
 
 ## Description

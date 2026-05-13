@@ -1,3 +1,8 @@
+---
+name: nftables-explain
+description: Use when the user provides a single nftables JSON snapshot (from `nft --json list ruleset`) and wants to understand what the rules are doing, the firewall posture of the host, or what specific rules mean. Trigger phrases include "what does this nftables config do", "explain my nftables rules", "is this nftables setup secure", "analyze my nftables ruleset", "what is my nftables firewall doing". Do NOT use when the user has two snapshots to compare (use nftables-diff-explain), for iptables rules (use iptables-explain), or for questions about nftables without providing a JSON snapshot file.
+---
+
 # nftables-explain — Claude Code Skill
 
 ## Description

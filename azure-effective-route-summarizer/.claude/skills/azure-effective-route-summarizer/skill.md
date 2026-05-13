@@ -1,3 +1,8 @@
+---
+name: azure-effective-route-summarizer
+description: Use when the user provides `az network nic show-effective-route-table` JSON and asks why traffic is taking an unexpected path, which route wins for a destination IP, if traffic is being blackholed, or wants to verify BGP or UDR routes are active. Trigger phrases include "which route wins", "why is traffic bypassing the firewall", "blackhole route", "effective routes for this NIC", "route table analysis", "BGP route active", "why is my traffic not going through the NVA", "check my routing". Do NOT use for NSG rule questions (use azure-security-rule-resolver), route table design or configuration, or general Azure networking questions without a route table JSON file.
+---
+
 # azure-effective-route-summarizer — Claude Code Skill
 
 ## Description

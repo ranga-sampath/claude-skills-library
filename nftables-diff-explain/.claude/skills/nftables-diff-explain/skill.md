@@ -1,3 +1,8 @@
+---
+name: nftables-diff-explain
+description: Use when the user has TWO nftables JSON snapshots (before and after a change) and wants to know what changed between them, the security impact of an nftables change, or what a firewall update did. Trigger phrases include "what changed in my nftables", "nftables diff between before and after", "what did the upgrade do to my firewall", "compare two nftables snapshots", "explain the nftables change", "nftables before vs after". Do NOT use for analysis of a single nftables snapshot (use nftables-explain), for iptables changes (use iptables-diff-explain), or for Azure NSG changes.
+---
+
 # nftables-diff-explain — Claude Code Skill
 
 ## Description

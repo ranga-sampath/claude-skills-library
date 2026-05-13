@@ -1,3 +1,8 @@
+---
+name: iptables-diff-explain
+description: Use when the user has TWO iptables-save snapshots (before and after a change) and wants to understand what changed, the security impact, or what a hardening script or upgrade did to the firewall. Trigger phrases include "what changed in the firewall", "iptables diff", "what did the hardening script do", "compare two iptables snapshots", "explain the iptables change", "iptables before vs after". Do NOT use for analysis of a single iptables snapshot (use iptables-explain), for nftables changes (use nftables-diff-explain), or for Azure NSG changes.
+---
+
 # iptables-diff-explain — Claude Code Skill
 
 ## Description

@@ -1,3 +1,8 @@
+---
+name: azure-security-rule-resolver
+description: Use when the user provides `az network nic list-effective-nsg` JSON and asks why traffic is blocked, which NSG rule is dropping traffic, whether a specific port is allowed or denied, or wants to audit effective security rules for shadowed entries. Trigger phrases include "why is port X blocked", "which rule is dropping this traffic", "is this traffic allowed", "check my NSG rules", "audit my security rules", "NSG verdict", "why can't my VM reach", "traffic blocked by NSG". Do NOT use for general Azure architecture questions, NSG design, ARM template editing, routing questions (use azure-effective-route-summarizer for routing), or questions about network security without an NSG JSON file.
+---
+
 # azure-security-rule-resolver — Claude Code Skill
 
 ## Description

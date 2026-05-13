@@ -1,3 +1,8 @@
+---
+name: pcap-forensics
+description: Use when the user provides a .pcap, .pcapng, or .cap file path and wants forensic analysis, root cause analysis, packet-level troubleshooting, or comparison of two captures. Trigger phrases include "analyze this pcap", "forensic analysis of this capture", "what's wrong in this packet capture", "compare these two captures", "packet-level troubleshooting", "network forensics", "investigate this .pcap", "baseline vs current capture". Do NOT use for questions about networking concepts without a capture file, firewall rule analysis without packet data (use nftables-explain or iptables-explain), or Azure network analysis.
+---
+
 # PCAP Forensic Engine — Operational Skill
 
 ## Description
