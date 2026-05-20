@@ -301,3 +301,22 @@ State these when relevant:
 | **No matching route** | If no Active route encompasses the destination — do not fabricate a result; state explicitly that traffic will be dropped |
 | **NSG evaluation** | This skill covers routing only. If the winning route is correct but traffic is still blocked, the cause may be an NSG rule — use `azure-security-rule-resolver` |
 | **OS firewall** | An OS-level firewall (iptables/nftables/Windows Firewall) may block traffic even if routing and NSGs are correct |
+
+---
+
+## Gotchas
+
+### Effective route table ≠ configured route table
+**Wrong path Claude typically takes:** Analyzing the configured route table (what was explicitly defined in the UDR) instead of the effective route table at the NIC.
+**Correct behavior:** Always work from `az network nic show-effective-route-table` output. The effective table is computed state: it includes Azure system routes, BGP-propagated routes from VPN/ExpressRoute gateways, and peering routes — none of which appear in the configured route table.
+**Why it matters:** A BGP-propagated route can silently override a UDR, and peering system routes appear from nowhere in the configured table. Diagnosing routing from the configured table alone will miss the actual winning route.
+
+### BGP source field is `VirtualNetworkGateway`, not `VpnGateway`
+**Wrong path Claude typically takes:** Referring to BGP-propagated routes as having source `VpnGateway` in the effective route table JSON.
+**Correct behavior:** The source field value for both VPN Gateway and ExpressRoute Gateway routes is `VirtualNetworkGateway` — exactly that string, no abbreviation. This is what appears in `az network nic show-effective-route-table` output and what the precedence tier table in this skill uses.
+**Why it matters:** Using `VpnGateway` in analysis output or filtering logic will produce wrong results. It is a common hallucination; always use the exact string `VirtualNetworkGateway`.
+
+### Effective routes can contradict the configured route table
+**Wrong path Claude typically takes:** Concluding "there is no route to X" based on the absence of a matching entry in the configured route table, or assuming UDRs always win.
+**Correct behavior:** BGP propagation from a VPN/ExpressRoute gateway can inject routes that take precedence over or coexist with UDRs. A system route from VNet peering can appear in the effective table that was never defined anywhere explicitly. Always treat the effective table as authoritative.
+**Why it matters:** Engineers are surprised when a BGP route at the same prefix length beats their UDR (source precedence: UDR > BGP > Default), or when a more-specific system route from peering shadows a broader UDR via LPM.

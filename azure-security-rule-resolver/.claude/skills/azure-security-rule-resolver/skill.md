@@ -268,3 +268,22 @@ State these clearly in the report when relevant:
 | **Service tags** | A rule uses a service tag other than `VirtualNetwork`, `Internet`, or `AzureLoadBalancer`. State that the match cannot be determined and list the tag name. |
 | **OS firewall / NVA** | This skill evaluates Azure NSGs only. If traffic passes both NSG gates but still fails, the cause may be an OS-level firewall (iptables/nftables) or a Network Virtual Appliance. |
 | **Routing** | NSGs are evaluated only when the packet reaches the NIC. If traffic is blackholed by a routing decision before reaching the NIC, the NSG evaluation is irrelevant. |
+
+---
+
+## Gotchas
+
+### Inbound and outbound gate order are not symmetric
+**Wrong path Claude typically takes:** Evaluating subnet NSG first for both inbound AND outbound traffic.
+**Correct behavior:** Inbound = subnet NSG first, then NIC NSG. Outbound = NIC NSG first, then subnet NSG. The first gate is different for each direction.
+**Why it matters:** For outbound traffic, a DENY on the NIC NSG drops the packet before the subnet NSG is ever evaluated. Applying the inbound order to outbound analysis will miss a NIC-level DENY and return a wrong ALLOW verdict.
+
+### Lower priority number = higher precedence (not the reverse)
+**Wrong path Claude typically takes:** Stating that priority 1000 "overrides" or "beats" priority 100, or that a rule at 200 is evaluated before a rule at 100.
+**Correct behavior:** Priority 100 is evaluated before priority 1000. The lowest number fires first. First matching rule wins — all lower-precedence rules after it are never reached.
+**Why it matters:** If a DENY exists at priority 100, adding an ALLOW at priority 200 does nothing — the DENY fires first. The ALLOW must be at a priority number *lower than* 100 (e.g., 90) to be evaluated first.
+
+### A DENY cannot be overridden by a later ALLOW at a higher priority number
+**Wrong path Claude typically takes:** Advising the user to "add an ALLOW rule at priority 200 to override the DENY at priority 100."
+**Correct behavior:** Because 100 is evaluated before 200, the DENY fires and evaluation stops. The ALLOW at 200 is never reached. To permit traffic blocked by a DENY at 100, add the ALLOW at a priority number below 100 (e.g., 90).
+**Why it matters:** This is the most common NSG misconfiguration — adding an ALLOW that is silently shadowed by an existing DENY at a lower (higher-precedence) priority number.

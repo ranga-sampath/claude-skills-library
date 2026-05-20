@@ -198,3 +198,22 @@ If sets are defined, explain what they contain and how they are used (e.g. "allo
 ## Notable Findings
 <bullet list of anything warranting attention. Omit if nothing notable.>
 ```
+
+---
+
+## Gotchas
+
+### tc and netfilter are separate kernel subsystems
+**Wrong path Claude typically takes:** Treating `tc` (traffic control) commands — such as `tc qdisc add dev eth0 tbf` — as part of the nftables/netfilter ruleset, or inferring tc configuration from nftables JSON.
+**Correct behavior:** tc operates in the kernel's qdisc layer; nftables/iptables operates in the netfilter layer. They are independent. `nft --json list ruleset` shows only netfilter rules — it contains no tc configuration. Do not comment on tc behavior based on nftables output; it would be fabricated.
+**Why it matters:** Conflating the two leads to wrong root-cause analysis. A tc-tbf rate limiter and an nftables DROP rule produce different observable symptoms and are diagnosed with different tools.
+
+### Complete ICMP failure while TCP passes = DROP rule, not rate limiter
+**Wrong path Claude typically takes:** Diagnosing complete ICMP failure (100% ping packet loss, not slow pings) as a rate limiter set too aggressively.
+**Correct behavior:** A rate limiter (tc-tbf or nftables limit) is protocol-agnostic — it degrades ALL traffic proportionally. If TCP is passing normally while ICMP is completely failing, that is the signature of a DROP rule targeting ICMP specifically (e.g., `meta l4proto icmp drop`). Look for it in the nftables ruleset.
+**Why it matters:** Misdiagnosing a DROP rule as a rate limiter sends the operator down the wrong remediation path (tuning rate parameters instead of removing or adjusting the DROP rule).
+
+### tc-tbf degrades all traffic proportionally — it has no protocol awareness
+**Wrong path Claude typically takes:** Stating that a tc-tbf (token bucket filter) rate limiter is "throttling ICMP" or "affecting UDP more than TCP."
+**Correct behavior:** tc-tbf is a queuing discipline applied at the interface level. It shapes all traffic on that interface at the configured rate regardless of protocol. It does not distinguish between ICMP, UDP, and TCP.
+**Why it matters:** Any claim that tc-tbf selectively affects one protocol is incorrect. Protocol-selective behavior in a symptom points to a netfilter rule (DROP/REJECT on a specific protocol), not to tc.
